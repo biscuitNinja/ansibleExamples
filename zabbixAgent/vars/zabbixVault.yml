@@ -1,0 +1,12 @@
+---
+
+# Replace with your zabbix agent hostnames and your own PSKs. See https://www.zabbix.com/documentation/3.0/manual/encryption/using_pre_shared_keys
+# Then encrypt this file with zabbix-vault
+
+zabbixAgentCreds:
+  - host1:
+    id: 'PSK 001'
+    psk: '7b681aefb3eadf824acddffb4e77be42e741f84a93971ab41f08d2affeba1017'
+  - host2:
+    id: 'PSK 002'
+    psk: 'c14d72f03d0f2a51acfd97f5660707df5e8384ccd25e6b16ed98888339b5553d'

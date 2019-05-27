@@ -1,0 +1,19 @@
+---
+
+- name: configure zabbix agent
+  template:
+    src: templates/etc/zabbix/zabbix_agentd.conf.j2
+    dest: /etc/zabbix/zabbix_agentd.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart zabbix agent
+
+- name: add zabbix agent psk
+  copy:
+    content: "{{ zabbixAgentCreds[inventory_hostname]['psk'] }}"
+    dest: /etc/zabbix/zabbix_agent_psk
+    owner: zabbix
+    group: zabbix
+    mode: 0440
+  notify: restart zabbix agent

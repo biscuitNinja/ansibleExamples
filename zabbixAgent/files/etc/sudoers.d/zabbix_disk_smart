@@ -1,0 +1,2 @@
+Cmnd_Alias C_ZABBIX = /usr/sbin/smartctl -q silent /dev/sd[a-z]
+zabbix ALL = (root) NOPASSWD: C_ZABBIX

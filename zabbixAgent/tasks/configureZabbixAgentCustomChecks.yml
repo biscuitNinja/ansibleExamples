@@ -1,0 +1,40 @@
+---
+
+- name: configure zabbix agent common custom checks
+  copy:
+    src: "files/etc/zabbix/zabbix_agentd.conf.d/{{ item }}"
+    dest: "/etc/zabbix/zabbix_agentd.conf.d/{{ item }}"
+  notify: restart zabbix agent
+  with_items: "{{ zabbixAgentCustomChecks }}"
+
+- name: configure zabbix agent common custom checks for physical hosts
+  copy:
+    src: "files/etc/zabbix/zabbix_agentd.conf.d/{{ item }}"
+    dest: "/etc/zabbix/zabbix_agentd.conf.d/{{ item }}"
+  notify: restart zabbix agent
+  with_items: "{{ zabbixAgentCustomChecksForPhysicalHosts }}"
+  when: ansible_facts['virtualization_role'] != "guest" and zabbixAgentCustomChecksForPhysicalHosts is defined
+
+- name: copy zabbix agent scripts
+  copy:
+    src: "files/usr/local/bin/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    mode: 0550
+  with_items: "{{ zabbixAgentScripts }}"
+
+- name: copy zabbix agent scripts for physical hosts
+  copy:
+    src: "files/usr/local/bin/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    mode: 0550
+  with_items: "{{ zabbixAgentScriptsForPhysicalHosts }}"
+  when: ansible_facts['virtualization_role'] != "guest" and zabbixAgentCustomScriptsForPhysicalHosts is defined
+
+- name: copy zabbix smartctl sudoers configuration for physical hosts
+  copy:
+    src: "files/etc/sudoers.d/{{ item }}"
+    dest: "/etc/sudoers.d/{{ item }}"
+    owner: root
+    mode: 0400
+  with_items: "{{ zabbixAgentSudoersForPhysicalHosts }}"
+  when: ansible_facts['virtualization_role'] != "guest" and zabbixAgentSudoersForPhysicalHosts is defined

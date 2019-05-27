@@ -1,0 +1,10 @@
+Cmnd_Alias C_ZABBIX_ZFS = /sbin/zpool list -H -o name, \
+			  /sbin/zpool list -H -o cap bikeshed, \
+			  /sbin/zpool list -H -o cap media, \
+			  /sbin/zpool list -H -o health bikeshed, \
+			  /sbin/zpool list -H -o health media, \
+			  /sbin/zpool list -H -o frag bikeshed, \
+			  /sbin/zpool list -H -o frag media
+
+zabbix ALL = (root) NOPASSWD: C_ZABBIX_ZFS
+

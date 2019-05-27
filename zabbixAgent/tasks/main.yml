@@ -1,0 +1,6 @@
+---
+
+- include_vars: vars/zabbixVault.yml
+- include: packages.yml
+- include: configureZabbixAgent.yml
+- include: configureZabbixAgentCustomChecks.yml
