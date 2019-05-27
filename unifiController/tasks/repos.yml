@@ -1,0 +1,15 @@
+---
+
+- name: add www.ubnt.com gpg key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 06E85760C0A52C50
+    state: present
+
+- name: add ubiquiti repository
+  apt_repository:
+    repo: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - "deb http://www.ubnt.com/downloads/unifi/debian stable ubiquiti"
