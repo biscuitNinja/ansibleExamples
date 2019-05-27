@@ -1,0 +1,44 @@
+---
+- name: get ethernet facts - used later to obtain first ethernet interface name for pihole setup configuration
+  set_fact:
+    ansible_eth: "{% set ansible_eth = ansible_eth|default([]) + [hostvars[inventory_hostname]['ansible_' + item]] %}{{ ansible_eth|list }}"
+  when: hostvars[inventory_hostname]['ansible_' + item]['type'] == 'ether'
+  with_items:
+    - "{{ hostvars[inventory_hostname]['ansible_interfaces'] }}"
+
+- name: create pi-hole group
+  group:
+    name: pihole
+    system: yes
+    gid: 999
+
+- name: create pi-hole user
+  user:
+    name: pihole
+    system: yes
+    create_home: no
+    shell: /usr/sbin/nologin
+    group: pihole
+    groups: www-data
+    uid: 999
+    
+- name: create pi-hole configuration directory
+  file:
+    path: /etc/pihole
+    state: directory
+    owner: pihole
+    group: pihole
+    mode: 0755
+
+- name: copy pi-hole setup vars
+  template:
+    src: templates/etc/pihole/setupVars.conf.j2
+    dest: /etc/pihole/setupVars.conf
+    owner: root
+    mode: 0644
+
+- name: install pi-hole the filthy way
+  shell: curl -sSL https://install.pi-hole.net | bash /dev/stdin --unattended
+  args: 
+    warn: no
+    creates: /etc/pihole/install.log
