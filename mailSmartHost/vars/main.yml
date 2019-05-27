@@ -1,0 +1,53 @@
+---
+
+postfix_debconf_selections:
+ - name: postfix
+   question: postfix/main_mailer_type
+   value: No configuration
+   vtype: select
+postfixAliases:                                                  
+  - user: mailer-daemon                                                                            
+    alias: postmaster
+  - user: postmaster                 
+    alias: root 
+  - user: nobody                                                     
+    alias: root
+  - user: hostmaster
+    alias: root     
+  - user: usenet            
+    alias: root
+  - user: news                        
+    alias: root                                             
+  - user: webmaster                           
+    alias: root                                                  
+  - user: www                      
+    alias: root                                                      
+  - user: ftp               
+    alias: root                                                        
+  - user: abuse               
+    alias: root      
+  - user: noc                     
+    alias: root             
+  - user: security                                                     
+    alias: root                  
+  - user: root                  
+    alias: root@somedomain.sometld
+  - user: user
+    alias: user@somedomain.sometld
+postfixGenericMaps:
+  - user: user
+    email: user@somedomain.sometld
+  - user: root
+    email: root@somedomain.sometld
+postfixSmtpdRelayRestrictions:   
+  - permit_mynetworks           
+  - permit_sasl_authenticated                            
+  - defer_unauth_destination
+postfixMyHostname: "{{ ansible_facts['hostname'] }}.{{ targetDomain }}"
+postfixMyDestination:            
+  - $myhostname                 
+  - "localhost.{{ targetDomain }}"                       
+  - localhost
+postfixRelayHost: theHostThisMailServerRelaysTo.somedomain.sometld
+postfixMessageSizeLimit: 10240000
+postfixDisableVrfyCommand: false

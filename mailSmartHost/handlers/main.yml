@@ -1,0 +1,22 @@
+---
+- name: newaliases
+  command: newaliases
+  notify: reload postfix
+
+- name: postmap genericmaps
+  command: postmap hash:/etc/postfix/genericmaps
+  notify: reload postfix
+
+- name: postmap passwordmaps
+  command: postmap hash:/etc/postfix/passwordmaps
+  notify: reload postfix
+
+- name: reload postfix
+  systemd:
+    name: postfix
+    state: reloaded 
+
+- name: restart postfix
+  systemd:
+    name: postfix
+    state: restarted

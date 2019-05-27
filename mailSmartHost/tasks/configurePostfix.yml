@@ -1,0 +1,55 @@
+---
+
+- name: create mailname
+  copy:
+    content: "{{ postfixMyHostname }}"
+    dest: /etc/mailname
+  notify: restart postfix
+
+- name: configure mail aliases
+  lineinfile:
+    dest: /etc/aliases
+    regexp: '^{{ item.user }}:.*'
+    line: '{{ item.user }}: {{ item.alias }}'
+    owner: root
+    group: root
+    mode: 0644
+    create: true
+    state: present
+  with_items: "{{ postfixAliases }}"
+  notify: newaliases
+
+- name: configure genericMaps
+  lineinfile:
+    dest: /etc/postfix/genericmaps
+    regexp: '^{{ item.user }}.*'
+    line: '{{ item.user }} {{ item.email }}'
+    owner: root
+    group: root
+    mode: 0600
+    create: true
+    state: present
+  with_items: "{{ postfixGenericMaps }}"
+  notify: postmap genericmaps
+
+- name: configure passwordmaps
+  lineinfile:
+    dest: /etc/postfix/passwordmaps
+    regexp: '^{{ item.server }} {{ item.user }}.*$'
+    line: '{{ item.server }} {{ item.user }}:{{ item.password }}'
+    owner: root
+    group: root
+    mode: 0600
+    create: true
+    state: present
+  with_items: "{{ postfixPasswordMaps }}"
+  notify: postmap passwordmaps
+
+- name: configure postfix main configuration file
+  template:
+    src: templates/etc/postfix/main.cf.j2
+    dest: /etc/postfix/main.cf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart postfix

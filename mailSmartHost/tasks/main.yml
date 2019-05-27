@@ -1,0 +1,5 @@
+---
+
+- include_vars: vars/saslVault.yml
+- include: packages.yml
+- include: configurePostfix.yml

@@ -1,0 +1,8 @@
+---
+
+# Change this file and encrypt it with ansible-vault
+
+postfixPasswordMaps:
+  - server: server address
+    user: someusername@somedomain.sometld
+    password: somePassword

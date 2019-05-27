@@ -1,0 +1,21 @@
+---
+- name: configure debconf
+  debconf:
+    name: "{{ item.name }}"
+    question: "{{ item.question }}"
+    value: "{{ item.value }}"
+    vtype: "{{ item.vtype }}"
+  with_items: "{{ postfix_debconf_selections }}"
+
+- name: install postfix packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  vars:
+    packages:
+    - postfix
+    - postfix-sqlite
+    - libsasl2-2
+    - libsasl2-modules
