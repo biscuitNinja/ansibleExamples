@@ -1,0 +1,4 @@
+---
+
+- include: installQemuGuestTools.yml
+  when: ansible_facts['virtualization_role'] =="guest" and ansible_facts['system_vendor'] == "QEMU"
