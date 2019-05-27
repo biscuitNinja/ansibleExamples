@@ -1,0 +1,33 @@
+---
+
+- name: install zfs
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  vars:
+    packages:
+    - zfs-dkms
+  notify:
+    - load zfs kernel module
+
+- name: fix up duplicated zfs-share.service
+  replace:
+    path: /lib/systemd/system/zfs-share.service
+    regexp: '^ExecStartPre=-\/usr\/bin\/rm -f \/etc\/dfs\/sharetab$'
+    replace: 'ExecStartPre=-/bin/rm -f /etc/dfs/sharetab'
+  notify: restart zfs services
+
+- name: duplicate zfs-share.service
+  copy:
+    src: /lib/systemd/system/zfs-share.service
+    dest: /etc/systemd/system/zfs-share.service
+    remote_src: yes
+  notify: restart zfs services
+
+- name: enable zfs-import-scan.service
+  systemd:
+    name: zfs-import-scan
+    enabled: yes
+  notify: restart zfs services

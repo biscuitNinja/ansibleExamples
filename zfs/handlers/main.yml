@@ -1,0 +1,22 @@
+---
+
+- name: clean apt cache
+  command: apt clean warn=no
+  become: yes
+
+- name: load zfs kernel module
+  modprobe:
+    name: zfs
+    state: present
+
+- name: restart zfs daemons
+  systemd:
+    name: "{{ item }}"
+    state: restarted
+    daemon_reload: yes
+  with_items:
+    - "zfs-import-scan"
+    - "zfs-import-cache"
+    - "zfs-mount"
+    - "zfs-share"
+  listen: restart zfs services
